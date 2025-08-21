@@ -47,7 +47,7 @@ controlador.update = async (req, res) => {
         const model = await Bus.findByPk(req.params.id);
         if (!model) return res.status(404).json({ msg: 'Bus no encontrado' });
         await model.update(req.body.bus);
-        res.json({response:'Bus Actualizado'});
+        res.json({ response: 'Bus Actualizado' });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ msg: 'Hable con el administrador', err });
@@ -57,6 +57,7 @@ controlador.update = async (req, res) => {
 controlador.eliminar = async (req, res) => {
     try {
         const model = await Bus.findByPk(req.params.id);
+        await Asientos.destroy({ where: { bus_id: req.params.id } })
         if (!model) return res.status(404).json({ msg: 'Bus no encontrado' });
         await model.destroy();
         res.json({ response: 'Bus eliminado' });
