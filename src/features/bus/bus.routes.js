@@ -12,17 +12,17 @@ router.post('/create', [
    /*  auth,
     tieneRole('admin') */
 ], create);
-router.get('/view', [
+router.get('/view/:id', [
     auth,
     tieneRole('admin','cliente')
 ], show);
-router.put('update', [
-    auth,
-    tieneRole('admin')
+router.put('/update/:id', [
+  /*   auth,
+    tieneRole('admin') */
 ], update);
-router.delete('delete', [
-    auth,
-    tieneRole('admin')
+router.delete('/delete/:id', [
+ /*    auth,
+    tieneRole('admin') */
 ], eliminar);
 
 module.exports = router;
