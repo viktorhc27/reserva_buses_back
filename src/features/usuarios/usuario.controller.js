@@ -25,6 +25,7 @@ controlador.show = async (req, res) => {
 controlador.create = async (req, res) => {
   try {
     const usuario = req.body.usuario;
+    usuario.passwordHash = '123456'
     const model = await Usuario.create(usuario);
     res.status(201).json(model);
   } catch (err) {
