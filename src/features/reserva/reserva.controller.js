@@ -2,7 +2,8 @@ const { Op } = require('sequelize');
 const { Asientos } = require('../associations');
 const Reserva = require('../reserva/reserva.model');
 const controlador = {}
-
+const PDFDocument = require('pdfkit');
+const QRCode = require('qrcode');
 controlador.index = async (req, res) => {
   try {
     const model = await Reserva.findAll();
@@ -31,9 +32,9 @@ controlador.reservar = async (req, res) => {
       if (disponible) return res.status(500).json({ response: 'Asiento no disponible' });
     }
 
-    await Reserva.bulkCreate(reserva);
+    let reservasSaved = await Reserva.bulkCreate(reserva);
 
-    return res.json({ response: 'Reservado con éxito' });
+    return res.json({ response: 'Reservado con éxito', reservasSaved });
 
   } catch (err) {
     console.error(err);
@@ -111,7 +112,45 @@ controlador.verificarReservaLista = async (req, res) => {
     return res.status(500).json({ msg: "Hable con el administrador", err });
   }
 };
+controlador.ticket_qr = async (req, res) => {
+  try {
+    const doc = new PDFDocument({
+      size: [250, 600],
+      margins: { top: 20, bottom: 20, left: 20, right: 20 }
+    });
+    const { reserva_id } = req.params
+    let ticket = await Reserva.findByPk(reserva_id)
+    if (!ticket) {
+      return res.status(404).json({ msg: 'Reserva no encontrada' });
+    }
+    // Configurar cabecera para PDF
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename=pdf_con_qr.pdf');
+    // Enviar PDF directamente al cliente
+    doc.pipe(res);
 
+    // Agregar texto
+    doc.fontSize(14).text('Ticket de Reserva', { align: 'center' })
+    doc.moveDown()
+
+
+    // Generar QR como data URL
+    const qrData = await QRCode.toDataURL(`${ticket.id}`);
+    const base64Data = qrData.replace(/^data:image\/png;base64,/, '');
+    const qrBuffer = Buffer.from(base64Data, 'base64');
+
+    // Insertar QR
+    doc.image(qrBuffer, 50, 100, { width: 150, height: 150 });
+
+    doc.end(); // Finalizar PDF
+    // Texto debajo del QR
+    doc.fontSize(12).text('Escanea el QR para ver tu reserva', 50, 280);
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ msg: 'Hable con el administrador', err });
+  }
+}
 controlador.create = async (req, res) => {
   try {
     const reserva = req.body.reserva;

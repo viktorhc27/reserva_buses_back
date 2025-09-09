@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { index, create, eliminar, show, update, reservar, verificarReserva, verificarReservaLista } = require('./reserva.controller');
+const { index, create, eliminar, show, update, reservar, verificarReserva, verificarReservaLista, ticket_qr } = require('./reserva.controller');
 
 router.get('/index', index);
 router.post('/create', create);
@@ -10,5 +10,5 @@ router.put('update', update);
 router.delete('delete', eliminar);
 router.post('/verificarReserva', verificarReserva)
 router.post('/verificarListaReserva', verificarReservaLista)
-
+router.get('/ticket_reserva/:reserva_id', ticket_qr)
 module.exports = router;
