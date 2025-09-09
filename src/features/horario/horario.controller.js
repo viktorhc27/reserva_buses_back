@@ -1,4 +1,7 @@
 const Horario = require('../horario/horario.model');
+const Ruta = require('../ruta/ruta.model');
+const Bus = require('../bus/bus.model');
+const Asientos = require('../asientos/asientos.model');
 const controlador = {}
 
 controlador.index = async (req, res) => {
@@ -13,7 +16,9 @@ controlador.index = async (req, res) => {
 
 controlador.show = async (req, res) => {
   try {
-    const model = await Horario.findByPk(req.params.id);
+    const model = await Horario.findByPk(req.params.id, {
+      include: [{ model: Ruta, as: 'ruta' }, { model: Bus, as: 'bus', include: [{ model: Asientos, as: 'asientos' }] }],
+    });
     if (!model) return res.status(404).json({ msg: 'Horario no encontrado' });
     return res.json(model);
   } catch (err) {

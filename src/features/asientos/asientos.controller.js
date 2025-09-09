@@ -24,7 +24,7 @@ controlador.asientosDisponibles = async (req, res) => {
         const asientos = await Asientos.findAll({ where: { bus_id: horario.bus_id } })
 
         const mapAsientos = asientos.map(a => {
-            let estado = "libre";
+            let estado = "disponible";
 
             if (reservasSet.has(a.id)) {
                 estado = "ocupado"
@@ -34,11 +34,11 @@ controlador.asientosDisponibles = async (req, res) => {
             }
 
             return {
+                id: a.id,
                 horario_id: horario.id,
                 numero: a.numero,
                 bus: horario.nus_id,
                 estado
-
             }
 
         })

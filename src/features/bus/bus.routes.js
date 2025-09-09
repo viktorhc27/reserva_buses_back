@@ -5,24 +5,24 @@ const auth = require('../../middlewares/auth');
 const { index, create, eliminar, show, update } = require('./bus.controller');
 
 router.get('/index', [
-  /*   auth,
-    tieneRole('admin', 'cliente') */
+    auth,
+    tieneRole('admin', 'cliente')
 ], index);
 router.post('/create', [
-   /*  auth,
-    tieneRole('admin') */
+    auth,
+    tieneRole('admin')
 ], create);
 router.get('/view/:id', [
     auth,
     tieneRole('admin','cliente')
 ], show);
 router.put('/update/:id', [
-  /*   auth,
-    tieneRole('admin') */
+    auth,
+    tieneRole('admin')
 ], update);
 router.delete('/delete/:id', [
- /*    auth,
-    tieneRole('admin') */
+    auth,
+    tieneRole('admin')
 ], eliminar);
 
 module.exports = router;

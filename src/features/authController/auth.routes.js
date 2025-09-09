@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { login, create } = require('./authController');
+const auth = require('../../middlewares/auth');
+const { login, create, isLogged } = require('./authController');
 /**
  * @swagger
  * tags:
@@ -88,4 +89,5 @@ router.post('/login', login);
  */
 router.post('/registro', create);
 
+router.get('/isLogged', [auth], isLogged);
 module.exports = router;

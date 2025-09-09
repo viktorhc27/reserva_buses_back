@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 
 const Usuario = sequelize.define('Usuario', {
   nombre: { type: DataTypes.STRING, allowNull: false },
+  rut: { type: DataTypes.STRING(), allowNull: false},
   apellido: { type: DataTypes.STRING, allowNull: false },
   email: { type: DataTypes.STRING(150), allowNull: false, validate: { isEmail: true } },
   passwordHash: { type: DataTypes.STRING, allowNull: false },
@@ -12,8 +13,10 @@ const Usuario = sequelize.define('Usuario', {
 }, {
   tableName: 'usuario',
   timestamps: true,
-  defaultScope: { attributes: { exclude: ['passwordHash'] } },
-  scopes: { withPassword: {} }
+  scopes: {
+    defaultScope: { attributes: { exclude: ['passwordHash'] } },
+    withPassword: {}
+  }
 });
 
 // Definir constantes de rol

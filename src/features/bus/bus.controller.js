@@ -44,10 +44,19 @@ controlador.create = async (req, res) => {
 
 controlador.update = async (req, res) => {
     try {
+        const asientos = []
         const model = await Bus.findByPk(req.params.id);
         if (!model) return res.status(404).json({ msg: 'Bus no encontrado' });
         await model.update(req.body.bus);
-        res.json({ response: 'Bus Actualizado' });
+        await Asientos.destroy({ where: { bus_id: req.params.id } });
+
+        for (let i = 1; i <= req.body.bus.capacidad; i++) {
+            asientos.push({ numero: i, bus_id: req.params.id })
+        }
+        await Asientos.bulkCreate(asientos)
+
+
+        return res.json({ response: 'Bus Actualizado' });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ msg: 'Hable con el administrador', err });

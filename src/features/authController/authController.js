@@ -6,23 +6,29 @@ const controlador = {};
 controlador.login = async (req, res) => {
     try {
         const { email, password } = req.body;
+        // Buscar usuario con contraseña
         const usuario = await Usuario.scope('withPassword').findOne({ where: { email } });
         if (!usuario) return res.status(404).json({ message: "Usuario no encontrado" });
 
         const valido = await usuario.comparePassword(password);
         if (!valido) return res.status(401).json({ message: "Contraseña incorrecta" });
+
+        // Generar token
         const token = jwt.sign(
             { id: usuario.id, rol: usuario.rol },
             process.env.JWT_SECRET,
             { expiresIn: "1d" }
         );
 
-        return res.json({ message: "Login exitoso", token });
+        // Eliminar el campo de contraseña antes de responder
+        const usuarioSinPassword = usuario.toJSON();
+        delete usuarioSinPassword.withPassword;
+
+        return res.json({ response: "success", token, usuario: usuarioSinPassword });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ msg: 'Hable con el administrador', error });
+        return res.status(500).json({ response: 'error', msg: 'Hable con el administrador', error });
     }
-
 }
 
 controlador.create = async (req, res) => {
@@ -37,5 +43,21 @@ controlador.create = async (req, res) => {
 };
 
 
+controlador.isLogged = async (req, res) => {
+    try {
+        const usuario = await Usuario.findByPk(req.usuario.id)
+        // Generar token
+        const token = jwt.sign(
+            { id: usuario.id, rol: usuario.rol },
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+        );
 
+        return res.json({ logged: true, usuario, token });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ logged: false, msg: 'Hable con el administrador', error });
+    }
+}
 module.exports = controlador;
