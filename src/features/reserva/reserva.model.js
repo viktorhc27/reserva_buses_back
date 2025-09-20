@@ -10,9 +10,9 @@ const Reserva = sequelize.define("Reserva", {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  usuario_id: {
+  cliente_id: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true
   },
   estado: { type: DataTypes.ENUM("CONFIRMADA", "PENDIENTE", "CANCELADA"), defaultValue: "CONFIRMADA" }
 }, {

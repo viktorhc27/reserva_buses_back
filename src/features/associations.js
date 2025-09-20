@@ -5,15 +5,15 @@ const Horario = require('./horario/horario.model');
 const Reserva = require('./reserva/reserva.model');
 const Pago = require('./pago/pago.model');
 const Asientos = require('./asientos/asientos.model');
-const Usuarios_invitados = require('./usuarios_invitados/usuarios_invitados.model');
-
+const Payment = require('./payment/payment.model');
+const Clientes = require('./clientes/clientes.model.js');
 // Relaciones
 
 Ruta.hasMany(Horario, { foreignKey: 'ruta_id' });
 Horario.belongsTo(Ruta, { foreignKey: 'ruta_id', as: 'ruta' });
 
-Usuario.hasMany(Reserva, { foreignKey: 'usuario_id' });
-Reserva.belongsTo(Usuario, { foreignKey: 'usuario_id' });
+Clientes.hasOne(Reserva, { foreignKey: 'cliente_id' });
+Reserva.belongsTo(Clientes, { foreignKey: 'cliente_id' });
 
 Horario.hasMany(Reserva, { foreignKey: 'horario_id' });
 Reserva.belongsTo(Horario, { foreignKey: 'horario_id' });
@@ -22,7 +22,7 @@ Reserva.hasOne(Pago, { foreignKey: 'reserva_id' });
 Pago.belongsTo(Reserva, { foreignKey: 'reserva_id' });
 
 Bus.hasMany(Horario, { foreignKey: 'bus_id' });
-Horario.belongsTo(Bus, { foreignKey: 'bus_id',as: 'bus' });
+Horario.belongsTo(Bus, { foreignKey: 'bus_id', as: 'bus' });
 
 Bus.hasMany(Asientos, { foreignKey: 'bus_id', as: 'asientos' });
 Asientos.belongsTo(Bus, { foreignKey: 'bus_id' });
@@ -31,10 +31,13 @@ Usuario.hasOne(Horario, { foreignKey: 'usuario_id' })
 Horario.belongsTo(Usuario, { foreignKey: 'usuario_id' })
 
 Asientos.hasOne(Reserva, { foreignKey: 'asientos_id' })
-Reserva.belongsTo(Asientos, { foreignKey: 'asientos_id' , as:'asiento'})
+Reserva.belongsTo(Asientos, { foreignKey: 'asientos_id', as: 'asiento' })
 
-Usuarios_invitados.hasOne(Reserva, { foreignKey: 'usuarios_invitados_id' });
-Reserva.belongsTo(Usuarios_invitados, { foreignKey: 'usuarios_invitados_id' });
+Ruta.hasOne(Reserva, { foreignKey: 'ruta_id', as: 'reserva' })
+Reserva.belongsTo(Ruta, { foreignKey: 'ruta_id', as: 'ruta' })
+
+Clientes.hasOne(Payment, { foreignKey: 'cliente_id', as: 'payment' })
+Payment.belongsTo(Clientes, { foreignKey: 'cliente_id', as: 'cliente' })
 
 
-module.exports = { Usuario, Bus, Ruta, Horario, Reserva, Pago, Asientos,Usuarios_invitados };
+module.exports = { Usuario, Bus, Ruta, Horario, Reserva, Pago, Asientos, Clientes };

@@ -49,6 +49,20 @@ controlador.asientosDisponibles = async (req, res) => {
     }
 };
 
+controlador.asientoBus = async (req, res) => {
+    try {
+        const id = req.params.id
+        console.log(id);
+        
+        const list = await Asientos.findAll({ where: { bus_id: id } })
+     
+        return res.json(list)
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ msg: 'Hable con el administrador', err });
+    }
+};
 
 
 module.exports = controlador;

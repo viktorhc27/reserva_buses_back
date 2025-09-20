@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { index, create, eliminar, show, update } = require('./usuarios_invitados.controller');
+const { index, create, eliminar, show, update } = require('./Clientes.controller');
 
 router.get('/index', [
 ], index);
