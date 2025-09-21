@@ -8,10 +8,10 @@ controlador.login = async (req, res) => {
         const { email, password } = req.body;
         // Buscar usuario con contraseña
         const usuario = await Usuario.scope('withPassword').findOne({ where: { email } });
-        if (!usuario) return res.status(404).json({ message: "Usuario no encontrado" });
+        if (!usuario) return res.status(404).json({ response: false, message: "Usuario no encontrado" });
 
         const valido = await usuario.comparePassword(password);
-        if (!valido) return res.status(401).json({ message: "Contraseña incorrecta" });
+        if (!valido) return res.status(401).json({ response: false, message: "Contraseña incorrecta" });
 
         // Generar token
         const token = jwt.sign(
@@ -24,10 +24,10 @@ controlador.login = async (req, res) => {
         const usuarioSinPassword = usuario.toJSON();
         delete usuarioSinPassword.withPassword;
 
-        return res.json({ response: "success", token, usuario: usuarioSinPassword });
+        return res.json({ response: true, token, usuario: usuarioSinPassword });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ response: 'error', msg: 'Hable con el administrador', error });
+        return res.status(500).json({ response: false, msg: 'Hable con el administrador', error });
     }
 }
 
